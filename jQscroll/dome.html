@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>滚屏插件</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/pageScorll.css">
+</head>
+<body>
+	<div class="block container">
+		<div class="scrollbox">
+			<div class="section" style="background:#f00;">1</div>
+			<div class="section" style="background:#0f0;">2</div>
+			<div class="section" style="background:#00f;">3</div>
+			<div class="section" style="background:#ff0;">4</div>
+		</div>
+	</div>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/JQuery.pageScroll.js"></script>
+	<script>
+		$('.block').pageScroll({
+			direction : 'vertical',
+			list : ['学校','幼儿园','公园','沙滩']
+		});
+	</script>
+</body>
+</html>

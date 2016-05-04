@@ -1,0 +1,93 @@
+html, body {
+overflow: hidden;
+height: 100%;
+}
+.container, .scrollbox, .scrollbox .section {
+	position: relative;
+	height: 100%;
+}
+.scrollbox .section {
+	background-color: #f00;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+.left {
+	float: left;
+}
+.right_nav {
+	position: fixed;
+	overflow: hidden;
+	width: 120px;
+}
+.pages {
+	float: right;
+}
+.vertical {
+	top: 30%;
+	right: 30px;
+}
+.horizontal {
+	left: 45%;
+	bottom: 30px;
+}
+.pages li {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	background: url('../images/right_nav.png') left -20px no-repeat;
+	cursor: pointer;
+}
+.pages li span {
+	position: absolute;
+	background: url('../images/right_nav_bg.png') 0 2px no-repeat;
+	font-size: 12px;
+	color: #333;
+	text-align: center;
+	line-height: 22px;
+	z-index: -10;
+}
+.vertical li {
+	margin: 25px 0;
+}
+.vertical li span {
+	width: 98px;
+	height: 20px;
+}
+.horizontal li{
+	float: left;
+	margin: 0 25px;
+}
+.pages .active {
+	background: url('../images/right_nav_show.png') 0 3px no-repeat;
+}
+
+/*上下切屏*/
+.change-page{
+	position: absolute;
+	width: 46px;
+	height: 46px;
+	bottom: 22px;
+	left: 50%;
+}
+.next {
+	position: absolute;
+	width: 46px;
+	height: 46px;
+	top: 0;
+	left: -50%;
+	background: url('../images/bg.png') -346px -52px no-repeat;
+	cursor: pointer;
+	z-index: 100;
+}
+.pre {
+	position: absolute;
+	width: 46px;
+	height: 46px;
+	top: 0;
+	left: -50%;
+	background: url('../images/bg.png') -528px -55px no-repeat;
+	cursor: pointer;
+	z-index: 100;
+}
