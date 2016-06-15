@@ -145,7 +145,6 @@
 		if(index == section.length -1){
 			$('.change-page').find('div').attr('class', 'pre');
 			$('.pre').on('click', function() {
-				console.log(1);
 				if(canScroll) {
 					sP.preSection();
 				}
