@@ -1,34 +1,41 @@
 (function($){
 	var defaults = {
-		container : '.container',
-		scrollbox : '.scrollbox',
-		section : '.section',
+		container : '.pageScroll-container',
+		scrollbox : '.pageScroll-scrollbox',
+		section : '.pageScroll-section',
 		index : 0,			//默认开始的页码
 		easing : 'ease',	//滚动的贝塞尔曲线
 		duration : 500,		//滚动时间间隔
 		direction : 'vertical',		//横纵向滚动设置，默认纵向。
 		keyboard : true,
-		list : [],
-		callback : ''
+		list : [],	//滚动每个页面的值
+		callback : null,	//指定滚屏结束的回调函数
+		callbackIndex : 'all'
 	};
-	var container, scrollbox, section, obj, oldindex = 0;
-	var arrSection = [];
-	var index;
-	var pages;
-	var canScroll = true;
-	var sP = $.fn.pageScroll = function(options){
-		obj = $.extend(defaults, options);
-		scrollbox = this.find(obj.scrollbox);
-		section = scrollbox.find(obj.section);
-		index = obj.index;
-		var direction = (obj.direction == 'vertical' ? true : false);
-		if(!direction) {
-			initLayout();
-		}
-		initPage(); 
-		intiEvent();
+	var container, scrollbox, section, obj, oldindex = 0,
+		arrSection = [],
+		// 当前滚动的页面数
+		index,
+		pages,
+		callback,
+		callbackIndex,
+		// 滚屏动画控制开关防止快速滚动
+		canScroll = true,
+		sP = $.fn.pageScroll = function(options){
+			obj = $.extend(defaults, options);
+			scrollbox = this.find(obj.scrollbox);
+			section = scrollbox.find(obj.section);
+			callback = obj.callback;
+			callbackIndex = obj.callbackIndex;
+			index = obj.index;
+			var direction = (obj.direction === 'vertical' ? true : false);
+			if(!direction) {
+				initLayout();
+			}
+			initPage(obj.list.length); 
+			intiEvent();
 
-	}
+		}
 
 	//向上一屏事件
 	sP.preSection = function() {
@@ -109,24 +116,40 @@
 	}
 
 	//导航分页模块
-	function initPage() {
-		pageHtml = '<div class="right_nav"><ul class="pages">';
-		for (var i = 0; i < section.length; i++) {
-			pageHtml += '<li><span>' + obj.list[i] + '</span></li>';
-		};
-		pageHtml += '</ul></div>';
-		$('body').append(pageHtml);
-		pages = $('body').find('.pages');
-		pages.find('li').eq(index).addClass('active');
+	function initPage(pagesNumber) {
 		if(obj.direction == 'vertical') {
-			$('body').find('.right_nav').addClass('vertical');
+			// 竖屏
+			var margin_l = -25 * pagesNumber;
+			var pageHtml = '<div class="right_nav"><ul class="pages">';
+			for (var i = 0; i < section.length; i++) {
+				pageHtml += '<li><span>' + obj.list[i] + '</span></li>';
+			};
+			pageHtml += '</ul></div>';
+			$('body').append(pageHtml);
+			pages = $('body').find('.pages');
+			pages.find('li').eq(index).addClass('active');
+			$('body').find('.right_nav').addClass('vertical').css({
+				'margin-top' : margin_l + 'px'
+			});
 			pages.find('li').find('span').css({'left' : '20px'});
 			pages.find('li').eq(index).find('span').css({'left' : '-90px'});
+			// 竖屏才有置底图标
+			$('body').append('<div class="change-page"><div class="next"></div></div>');
 		}else {
-			pages.addClass('horizontal');
+			// 横屏
+			var margin_l = -15 * pagesNumber;
+			var pageHtml = '<div class="bottom_nav"><ul class="pages">';
+			for (var i = 0; i < section.length; i++) {
+				pageHtml += '<li></li>';
+			};
+			pageHtml += '</ul></div>';
+			$('body').append(pageHtml);
+			pages = $('body').find('.pages');
+			pages.find('li').eq(index).addClass('active');
+			$('body').find('.bottom_nav').addClass('horizontal').css({
+				'margin-left' : margin_l + 'px'
+			});
 		}
-
-		$('body').append('<div class="change-page"><div class="next"></div></div>');
 	}
 
 	//是否支持css的某个属性
@@ -142,15 +165,18 @@
 
 	//页面滚动事件
 	function scrollPage() {
-		if(index == section.length -1){
-			$('.change-page').find('div').attr('class', 'pre');
-			$('.pre').on('click', function() {
-				if(canScroll) {
-					sP.preSection();
-				}
-			});
-		}else{
-			$('.change-page').find('div').attr('class', 'next');
+		if(obj.direction == 'vertical') {
+			// 只有在滚屏时间下才需要置底图标的控制
+			if(index == section.length -1){
+				$('.change-page').find('div').attr('class', 'pre');
+				$('.pre').on('click', function() {
+					if(canScroll) {
+						sP.preSection();
+					}
+				});
+			}else{
+				$('.change-page').find('div').attr('class', 'next');
+			}
 		}
 		canScroll = false;
 		var parentP = section.eq(index).position();
@@ -187,6 +213,14 @@
 			}, obj.duration).parent().siblings().children().animate({
 				left : 20
 			}, obj.duration);
+		}
+		// 滚动完成执行回调函数
+		if(typeof callback === 'function') {
+			if (callbackIndex === 'all') {
+				callback();
+			} else if (index === callbackIndex) {
+				callback();
+			}
 		}
 	}
 }(jQuery));
