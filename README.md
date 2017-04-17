@@ -1,5 +1,5 @@
 # jQscroll
-###JQ整页面滚屏插件
+### JQ整页面滚屏插件 ###
 
 <p align="center">
   <a href="https://cwsjoker.github.io/mystatic/jQscroll/index.html" target="_blank">
